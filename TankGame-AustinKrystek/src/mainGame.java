@@ -78,8 +78,9 @@ public class mainGame extends JFrame  {
 		setupGame();
 		while (tankHealth[0]>0 && tankHealth[1]>0){
 				
-			fireInfo[0] = Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle"));
-			fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power"))/-1);
+			fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle"))+180);
+			//If shell travels the wrong direction 
+			fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power")));
 			shellCalc();
 			break;
 		}
@@ -98,16 +99,22 @@ public class mainGame extends JFrame  {
 		tankShellPos[1] = 0;
 	}
 	public void shellCalc(){
-		double xSpeed = fireInfo[1]*Math.cos(Math.toRadians(fireInfo[0]));
-		double ySpeed = fireInfo[1]*Math.sin(Math.toRadians(fireInfo[0]));
+		double xSpeed = (double)fireInfo[1]*Math.cos(Math.toRadians(fireInfo[0]));
+		double ySpeed = (double)fireInfo[1]*Math.sin(Math.toRadians(fireInfo[0]));
 		final double gravity = 0.98;
 		double time = 0.0;
+		double x,y; 
 		try{
 			do{
-				
-				break;
+				x = (xSpeed*time);
+				y = (ySpeed*time) + (((1/2)*gravity)*Math.pow(time, 2));
+				display.drawShell(shell);
+				shell[1] += 1;
+				Thread.sleep(17);
 			}while(false == hitDet());
-		
+			System.out.println("HIT");
+
+			Thread.sleep(300000);
 		}
 		catch(Exception e){
 			System.out.println("Hit Detection failure");
@@ -116,28 +123,40 @@ public class mainGame extends JFrame  {
 
 	
 	public boolean hitDet (){
+		//System.out.println("Hit Detection Starting");
 		boolean hitDet = false;
+		//System.out.println("Inilizing Points array");
 		Point[] points = shellRadiusPoints();
+		//System.out.println("Array Inilized");
 		if(calcHit(tankPoly,points) == true){
 			hitDet = true;
 		}
 		if(calcHit(worldPoly,points) == true){
 			hitDet = true;
 		}
+		//System.out.println("No hit");
 		return hitDet;
 	}
+	
 	public boolean calcHit (Polygon[] currentPoly, Point[] points){
 		boolean hit = false;
+		//System.out.println("Calc Start");
 		for(int i = 0; i < currentPoly.length; i++){
-			for(int j = 0; j < points.length; i++){
+			//System.out.println("Checking next poly");
+			for(int j = 0; j < points.length; j++){
+				//System.out.println("About to check point: " + points[j]);
 				if (currentPoly[i].contains(points[j])){
 					hit = true;
+					System.out.println("Set hit to true"+" Point:"+ points[j]);
+					break;
 				}
 			}
-		}
+		};
+		//System.out.println("Calc Run");
 		return hit;
 	}
-	//Fix this make it more smooth
+	
+	//Maybe Fix this make it more smooth
 	public void createWorld(){
 		int x[] = new int[4];
 		int y[] = new int[4];
@@ -307,11 +326,15 @@ public class mainGame extends JFrame  {
 		yPos = vShift;
 		return yPos;
 	}
+	//Currently broken needs fixing
 	public Point[] shellRadiusPoints (){
-		Point[] points = new Point[90];
+		//Calculating Shell Points
+		//System.out.println("Calculating Points");
+		Point[] points = new Point[20];
 		double rad = (shellDi/2);
 		for(int i = 0; i < points.length; i++){
-			double curAngle = (((double)360/(double)4) + ((double)360/(double)4)*(double)i);
+			double curAngle = (((double)360/(double)points.length) + ((double)360/(double)points.length)*(double)i);
+			//System.out.println("Current Angle: "+ curAngle);
 			int x,y;
 			int vShift, hShift;
 			x = (int)(Math.round(rad*(Math.cos(Math.toRadians(curAngle)))));
@@ -336,8 +359,8 @@ public class mainGame extends JFrame  {
 				hShift = x;
 				vShift = y;
 			}
-			x = hShift + 10;
-			y = vShift + 10;
+			//x = hShift + 10;
+			//y = vShift + 10;
 			points[i] = new Point (x,y);
 		}
 		return points;
