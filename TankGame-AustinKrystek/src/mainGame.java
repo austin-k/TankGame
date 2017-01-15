@@ -29,6 +29,8 @@ public class mainGame extends JFrame  {
 	double[][] secSlopes = new double[7][2];
 	Polygon[] tankPoly = new Polygon[2];
 	Polygon[] worldPoly = new Polygon[7];
+	int shellDi = 20;
+	int[] shell = {0,0,shellDi,shellDi};
 	public mainGame(){
 		setTitle("Tank Game");
 		
@@ -102,6 +104,7 @@ public class mainGame extends JFrame  {
 		double time = 0.0;
 		try{
 			do{
+				
 				break;
 			}while(false == hitDet());
 		
@@ -114,10 +117,26 @@ public class mainGame extends JFrame  {
 	
 	public boolean hitDet (){
 		boolean hitDet = false;
-		
+		Point[] points = shellRadiusPoints();
+		if(calcHit(tankPoly,points) == true){
+			hitDet = true;
+		}
+		if(calcHit(worldPoly,points) == true){
+			hitDet = true;
+		}
 		return hitDet;
 	}
-	
+	public boolean calcHit (Polygon[] currentPoly, Point[] points){
+		boolean hit = false;
+		for(int i = 0; i < currentPoly.length; i++){
+			for(int j = 0; j < points.length; i++){
+				if (currentPoly[i].contains(points[j])){
+					hit = true;
+				}
+			}
+		}
+		return hit;
+	}
 	//Fix this make it more smooth
 	public void createWorld(){
 		int x[] = new int[4];
@@ -287,5 +306,40 @@ public class mainGame extends JFrame  {
 		}
 		yPos = vShift;
 		return yPos;
+	}
+	public Point[] shellRadiusPoints (){
+		Point[] points = new Point[90];
+		double rad = (shellDi/2);
+		for(int i = 0; i < points.length; i++){
+			double curAngle = (((double)360/(double)4) + ((double)360/(double)4)*(double)i);
+			int x,y;
+			int vShift, hShift;
+			x = (int)(Math.round(rad*(Math.cos(Math.toRadians(curAngle)))));
+			y = (int)(Math.round(rad*(Math.sin(Math.toRadians(curAngle)))));
+			if(x < 0 && y < 0){
+				hShift = shell[0] + x;
+				vShift = shell[1] + y;
+			}
+			else if(x > -1 && y < 0){
+				hShift = shell[0] - x;
+				vShift = shell[1] + y;
+			}
+			else if(x < 0 && y > -1){
+				hShift = shell[0] + x;
+				vShift = shell[1] - y;
+			}
+			else if(x > -1 && y > -1){
+				hShift = shell[0] - x;
+				vShift = shell[1] - y;
+			}
+			else{
+				hShift = x;
+				vShift = y;
+			}
+			x = hShift + 10;
+			y = vShift + 10;
+			points[i] = new Point (x,y);
+		}
+		return points;
 	}
 }
