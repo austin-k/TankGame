@@ -17,19 +17,17 @@ public class mainGame extends JFrame  {
 	int [] tankHealth = new int [2];
 	//If a tank has fired and which tank
 	int [] tankFired = new int [2];
-	//Includes X in array pos 0 and Y int array pos 1
-	int [] tankShellPos = new int [2];
 	//Power and fire angle
 	int [] fireInfo = new int [2];
 	//Location of tank
 	int [][][] tankInfo= new int[2][4][2];;
 	//World Map
 	int[][][] world = new int [7][4][2];
-	//Sector Slopes and reciporcal
+	//Sector Slopes and reciprocal
 	double[][] secSlopes = new double[7][2];
 	Polygon[] tankPoly = new Polygon[2];
 	Polygon[] worldPoly = new Polygon[7];
-	int shellDi = 20;
+	int shellDi = 8;
 	int[] shell = {0,0,shellDi,shellDi};
 	public mainGame(){
 		setTitle("Tank Game");
@@ -95,21 +93,24 @@ public class mainGame extends JFrame  {
 		tankHealth[1] = 100;
 		tankFired[0] = 0;
 		tankFired[1] = 0;
-		tankShellPos[0] = 0;
-		tankShellPos[1] = 0;
 	}
 	public void shellCalc(){
 		double xSpeed = (double)fireInfo[1]*Math.cos(Math.toRadians(fireInfo[0]));
 		double ySpeed = (double)fireInfo[1]*Math.sin(Math.toRadians(fireInfo[0]));
-		final double gravity = 0.98;
-		double time = 0.0;
+		double gravity = 9.8;
+		double time = 0.00;
+		System.out.println("Fire Angle: "+ fireInfo[0]);
+		System.out.println("xSpeed: " + xSpeed+ " ySpeed: "+ ySpeed);
 		double x,y; 
 		try{
 			do{
+				time += 0.017;
 				x = (xSpeed*time);
-				y = (ySpeed*time) + (((1/2)*gravity)*Math.pow(time, 2));
+				y = ((ySpeed*time) + (((0.5)*gravity)*(Math.pow(time, 2))));
+				
+				System.out.println("Calculated X: " + x + " Y: " + y+ " Time: " + time);
 				display.drawShell(shell);
-				shell[1] += 1;
+				
 				Thread.sleep(17);
 			}while(false == hitDet());
 			System.out.println("HIT");
@@ -130,9 +131,11 @@ public class mainGame extends JFrame  {
 		//System.out.println("Array Inilized");
 		if(calcHit(tankPoly,points) == true){
 			hitDet = true;
+			System.out.println("Tank Hit");
 		}
 		if(calcHit(worldPoly,points) == true){
 			hitDet = true;
+			System.out.println("World Hit");
 		}
 		//System.out.println("No hit");
 		return hitDet;
@@ -332,6 +335,7 @@ public class mainGame extends JFrame  {
 		//System.out.println("Calculating Points");
 		Point[] points = new Point[20];
 		double rad = (shellDi/2);
+		//System.out.println("Generating New Points");
 		for(int i = 0; i < points.length; i++){
 			double curAngle = (((double)360/(double)points.length) + ((double)360/(double)points.length)*(double)i);
 			//System.out.println("Current Angle: "+ curAngle);
@@ -339,28 +343,11 @@ public class mainGame extends JFrame  {
 			int vShift, hShift;
 			x = (int)(Math.round(rad*(Math.cos(Math.toRadians(curAngle)))));
 			y = (int)(Math.round(rad*(Math.sin(Math.toRadians(curAngle)))));
-			if(x < 0 && y < 0){
-				hShift = shell[0] + x;
-				vShift = shell[1] + y;
-			}
-			else if(x > -1 && y < 0){
-				hShift = shell[0] - x;
-				vShift = shell[1] + y;
-			}
-			else if(x < 0 && y > -1){
-				hShift = shell[0] + x;
-				vShift = shell[1] - y;
-			}
-			else if(x > -1 && y > -1){
-				hShift = shell[0] - x;
-				vShift = shell[1] - y;
-			}
-			else{
-				hShift = x;
-				vShift = y;
-			}
-			//x = hShift + 10;
-			//y = vShift + 10;
+			//System.out.println("Current Point Generated: " + "X: "+ x + " Y: "+ y);
+			hShift = shell[0] + x;
+			vShift = shell[1] + y;
+			x = hShift + (int)rad;
+			y = vShift + (int)rad;
 			points[i] = new Point (x,y);
 		}
 		return points;
