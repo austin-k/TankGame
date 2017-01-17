@@ -6,9 +6,6 @@ import java.awt.event.*;
 
 public class mainGame extends JFrame  {
 
-	/**
-	 * @param args
-	 */
 	
 	Container frame;
 	private JPanel gameInfo;
@@ -20,7 +17,7 @@ public class mainGame extends JFrame  {
 	//Power and fire angle
 	int [] fireInfo = new int [2];
 	//Location of tank
-	int [][][] tankInfo= new int[2][4][2];;
+	int [][][][] tankInfo= new int[2][2][4][2];;
 	//World Map
 	int[][][] world = new int [7][4][2];
 	//Sector Slopes and reciprocal
@@ -49,7 +46,7 @@ public class mainGame extends JFrame  {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 			
 			new mainGame();
 			System.exit(0); 
@@ -107,15 +104,12 @@ public class mainGame extends JFrame  {
 				time += 0.04;
 				x = (xSpeed*time);
 				y = ((ySpeed*time) + (((0.5)*gravity)*(Math.pow(time, 2))));
-				posTranslator(tankInfo[0][3][0],tankInfo[0][3][1]-20,(int)(Math.round(x)),(int)(Math.round(y)));
+				posTranslator(tankInfo[0][0][3][0],tankInfo[0][0][3][1]-20,(int)(Math.round(x)),(int)(Math.round(y)));
 				System.out.println("Calculated X: " + x + " Y: " + y+ " Time: " + time);
 				display.drawShell(shell);
 				
 				Thread.sleep(17);
-			}while(false == hitDet());
-			System.out.println("HIT");
-
-			Thread.sleep(300000);
+			}while(false == hitDet());	
 		}
 		catch(Exception e){
 			System.out.println("Hit Detection failure");
@@ -136,6 +130,10 @@ public class mainGame extends JFrame  {
 		if(calcHit(worldPoly,points) == true){
 			hitDet = true;
 			System.out.println("World Hit");
+		}
+		if(shell[0] < -16 || shell[0] > 700){
+			hitDet = true;
+			System.out.println("Out of Bounds");
 		}
 		//System.out.println("No hit");
 		return hitDet;
@@ -221,60 +219,61 @@ public class mainGame extends JFrame  {
 			double startMod = 25;
 			if(i == 0){
 				sector = 1;
-				tankInfo[i][1][0] = world[sector][0][0] + (int)(startMod); 
-				tankInfo[i][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				double angle1 = angleCalcP1(i,1,sector,tankH);
-				tankInfo[i][0][0] = xPos(angle1,i,1,sector,tankH);
-				tankInfo[i][0][1] = yPos(angle1,i,1,sector,tankH);
-				startMod = 35;
+				startPosMeth(i,sector,startMod,tankH,tankW);
 				
-				tankInfo[i][2][0] = (((700/7)*sector)+(int)startMod); 
-				tankInfo[i][2][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				double angle2 = angleCalcP2(i,2,sector,tankW);
-				tankInfo[i][2][0] = xPos(angle2,i,2,sector,tankW); 
-				tankInfo[i][2][1] = yPos(angle2,i,2,sector,tankW);
-				
-				tankInfo[1][3][0] = world[sector][3][0] + (int)(startMod); 
-				tankInfo[i][3][1] = world[sector][3][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				//angle1 = angleCalcP1(i,3,sector,tankH);
-				tankInfo[i][3][0] = xPos(angle1,i,2,sector,tankH);
-				tankInfo[i][3][1] = yPos(angle1,i,2,sector,tankH);
 			}
 			else if(i == 1){
 				sector = 5;
-				tankInfo[i][1][0] = world[sector][0][0] + (int)(startMod); 
-				tankInfo[i][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				double angle1 = angleCalcP1(i,1,sector,tankH);
-				tankInfo[i][0][0] = xPos(angle1,i,1,sector,tankH);
-				tankInfo[i][0][1] = yPos(angle1,i,1,sector,tankH);
-				startMod = 35;
-				
-				tankInfo[i][2][0] = (((700/7)*sector)+(int)startMod); 
-				tankInfo[i][2][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				double angle2 = angleCalcP2(i,2,sector,tankW);
-				tankInfo[i][2][0] = xPos(angle2,i,2,sector,tankW); 
-				tankInfo[i][2][1] = yPos(angle2,i,2,sector,tankW);
-				
-				tankInfo[1][3][0] = world[sector][3][0] + (int)(startMod); 
-				tankInfo[i][3][1] = world[sector][3][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
-				//angle1 = angleCalcP1(i,3,sector,tankH);
-				tankInfo[i][3][0] = xPos(angle1,i,2,sector,tankH);
-				tankInfo[i][3][1] = yPos(angle1,i,2,sector,tankH);
+				startPosMeth(i,sector,startMod,tankH,tankW);
 			}
 			
 		}
 		for(int j = 0; j < 2; j++){
 			for(int i = 0; i < 4;i++){
-				x[i] = tankInfo[j][i][0];
-				y[i] = tankInfo[j][i][1];	
+				x[i] = tankInfo[j][0][i][0];
+				y[i] = tankInfo[j][0][i][1];	
 			}
 			tankPoly[j] = new Polygon(x,y,4);
 		}
 	System.out.println("x: " + tankInfo[0][0][0]+" y: "+ tankInfo[0][0][1]);
 	
 	}
-	public double angleCalcP1 (int i,int y,int slope,double length){
-		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
+	public void startPosMeth(int i, int sector, double startMod, double tankH, double tankW){
+		tankInfo[i][0][1][0] = world[sector][0][0] + (int)(startMod); 
+		tankInfo[i][0][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		double angle1 = angleCalcP1(i,1,sector,tankH,0);
+		tankInfo[i][0][0][0] = xPos(angle1,i,1,sector,tankH,0);
+		tankInfo[i][0][0][1] = yPos(angle1,i,1,sector,tankH,0);
+		startMod = 35;
+		
+		tankInfo[i][0][2][0] = (((700/7)*sector)+(int)startMod); 
+		tankInfo[i][0][2][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		double angle2 = angleCalcP2(i,2,sector,tankW,0);
+		tankInfo[i][0][2][0] = xPos(angle2,i,2,sector,tankW,0); 
+		tankInfo[i][0][2][1] = yPos(angle2,i,2,sector,tankW,0);
+		
+		tankInfo[1][0][3][0] = world[sector][3][0] + (int)(startMod); 
+		tankInfo[i][0][3][1] = world[sector][3][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		//angle1 = angleCalcP1(i,3,sector,tankH);
+		tankInfo[i][0][3][0] = xPos(angle1,i,2,sector,tankH,0);
+		tankInfo[i][0][3][1] = yPos(angle1,i,2,sector,tankH,0);
+		
+		tankInfo[i][1][1][0] = tankInfo[i][0][0][0] + 10;
+		tankInfo[i][1][1][1] = tankInfo[i][0][0][0] + (int)(Math.round(secSlopes[sector][0]*10));
+		double angle3 = angleCalcP3(i,1,sector,25,1);
+		tankInfo[i][1][0][0] = xPos(angle3,i,1,sector,10,0);
+		tankInfo[i][1][0][1] = yPos(angle3,i,1,sector,10,0);
+		
+		tankInfo[i][1][2][0] = xPos(angle2,i,2,sector,25,1);
+		tankInfo[i][1][2][1] = yPos(angle2,i,2,sector,25,1);
+		angle3 = angleCalcP3(i,2,sector,25,1);
+		tankInfo[i][1][2][0] = xPos(angle2,i,2,sector,25,1);
+		tankInfo[i][1][2][1] = yPos(angle2,i,2,sector,25,1);
+		
+		tankInfo[][][][] = 
+	}
+	public double angleCalcP1 (int i,int y,int slope,double length,int tankShape){
+		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][tankShape][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
 		System.out.println("Angle1: "+ angle);
 		System.out.println("tankInfo[i][y][0] "+ tankInfo[i][y][0]);
 		if(secSlopes[slope][0] < 0){
@@ -287,10 +286,10 @@ public class mainGame extends JFrame  {
 		System.out.println("Angle1: "+ angle);
 		return angle;
 	}
-	public double angleCalcP2 (int i,int y,int slope,double length){
-		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
+	public double angleCalcP2 (int i,int y,int slope,double length,int tankShape){
+		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][tankShape][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
 		System.out.println("Angle2: "+ angle);
-		System.out.println("tankInfo[i][y][0] "+ tankInfo[i][y][0]);
+		System.out.println("tankInfo[i][y][0] "+ tankInfo[i][tankShape][y][0]);
 		if(secSlopes[slope][0] < 0){
 			angle = (angle+360);
 		}
@@ -301,30 +300,43 @@ public class mainGame extends JFrame  {
 		System.out.println("Angle2: "+ angle);
 		return angle;
 	}
-	public int xPos (double angle,int i,int j,int slope,double length){
+	public double angleCalcP3 (int i,int y,int slope,double length,int tankShape){
+		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][tankShape][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
+		System.out.println("Angle2: "+ angle);
+		System.out.println("tankInfo[i][y][0] "+ tankInfo[i][tankShape][y][0]);
+		if(secSlopes[slope][0] < 0){
+			angle = (angle+240);
+		}
+		else{
+			
+			angle = 60+ angle;
+		}
+		return angle;
+	}
+	public int xPos (double angle,int i,int j,int slope,double length,int tankShape){
 		int xPos = 0;
 		xPos = (int)(Math.round(length*(Math.cos(Math.toRadians(angle)))));
 		int hShift = 0;
 		System.out.println("x: " +xPos+" ");
 		if(secSlopes[slope][0] < 0){
-			hShift = (tankInfo[i][j][0]+xPos);
+			hShift = (tankInfo[i][tankShape][j][0]+xPos);
 		}
 		else{
-			hShift = (tankInfo[i][j][0]-xPos);
+			hShift = (tankInfo[i][tankShape][j][0]-xPos);
 		}
 		xPos = hShift;
 		return xPos;
 	}
-	public int yPos (double angle,int i,int j,int slope,double length){
+	public int yPos (double angle,int i,int j,int slope,double length,int tankShape){
 		int yPos = 0;
 		yPos = (int)(Math.round(length*(Math.sin(Math.toRadians(angle)))));
 		int vShift = 0;
 		System.out.println("y: " +yPos+"");
 		if(secSlopes[slope][0] < 0){
-			vShift = (tankInfo[i][j][1] + yPos);
+			vShift = (tankInfo[i][tankShape][j][1] + yPos);
 		}
 		else{
-			vShift = (tankInfo[i][j][1] - yPos);
+			vShift = (tankInfo[i][tankShape][j][1] - yPos);
 		}
 		yPos = vShift;
 		return yPos;
@@ -355,6 +367,5 @@ public class mainGame extends JFrame  {
 	public void posTranslator (int xOrig, int yOrig, int xNew, int yNew){
 		shell[0] = (xOrig + xNew);
 		shell[1] = (yOrig + yNew);
-	
 	}
 }
