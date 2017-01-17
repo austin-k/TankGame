@@ -6,7 +6,7 @@ public class DrawGame extends JPanel {
 	int[][][] world;
 	int trust = 0;
 	int trust1 = 0;
-	Polygon[] tankPoly;
+	Polygon[][] tankPoly;
 	Polygon[] worldPoly;
 	int[] shell;
 	public void paint(Graphics g){
@@ -52,8 +52,10 @@ public class DrawGame extends JPanel {
 		g.setColor(Color.RED);
 		if (trust == 1){
 			//g.drawLine(tanksInfo[0][1][0],tanksInfo[0][1][1],tanksInfo[0][0][0],tanksInfo[0][0][1]);
-			for(int j = 0; j < 2; j++){
-				g.fillPolygon(tankPoly[j]);
+			for(int i = 0; i < 2; i++){
+				for(int j = 0; j < 2; j++){
+					g.fillPolygon(tankPoly[i][j]);
+				}
 			}
 		}
 		if(trust1 == 1){
@@ -62,7 +64,7 @@ public class DrawGame extends JPanel {
 	}
 	
 
-	public void drawTest(Polygon[] tankPoly)
+	public void drawTest(Polygon[][] tankPoly)
 	{
 	     this.tankPoly = tankPoly; 
 	     trust = 1;
