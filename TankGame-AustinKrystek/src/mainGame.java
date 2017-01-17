@@ -104,10 +104,10 @@ public class mainGame extends JFrame  {
 		double x,y; 
 		try{
 			do{
-				time += 0.017;
+				time += 0.04;
 				x = (xSpeed*time);
 				y = ((ySpeed*time) + (((0.5)*gravity)*(Math.pow(time, 2))));
-				
+				posTranslator(tankInfo[0][3][0],tankInfo[0][3][1]-20,(int)(Math.round(x)),(int)(Math.round(y)));
 				System.out.println("Calculated X: " + x + " Y: " + y+ " Time: " + time);
 				display.drawShell(shell);
 				
@@ -329,7 +329,7 @@ public class mainGame extends JFrame  {
 		yPos = vShift;
 		return yPos;
 	}
-	//Currently broken needs fixing
+	
 	public Point[] shellRadiusPoints (){
 		//Calculating Shell Points
 		//System.out.println("Calculating Points");
@@ -351,5 +351,10 @@ public class mainGame extends JFrame  {
 			points[i] = new Point (x,y);
 		}
 		return points;
+	}
+	public void posTranslator (int xOrig, int yOrig, int xNew, int yNew){
+		shell[0] = (xOrig + xNew);
+		shell[1] = (yOrig + yNew);
+	
 	}
 }
