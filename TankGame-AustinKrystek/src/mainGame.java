@@ -260,6 +260,7 @@ public class mainGame extends JFrame  {
 	
 	}
 	public void startPosMeth(int i, int sector, double startMod, double tankH, double tankW){
+		double tankTopSlope;
 		tankInfo[i][0][1][0] = world[sector][0][0] + (int)(startMod); 
 		tankInfo[i][0][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
 		double angle1 = angleCalcP1(i,1,sector,tankH,0);
@@ -279,9 +280,14 @@ public class mainGame extends JFrame  {
 		tankInfo[i][0][3][0] = xPos(angle1,i,2,sector,tankH,0);
 		tankInfo[i][0][3][1] = yPos(angle1,i,2,sector,tankH,0);
 		
-		tankInfo[i][1][1][0] = tankInfo[i][0][0][0] + 5;
-		tankInfo[i][1][1][1] = tankInfo[i][0][0][1] + (int)(Math.round(secSlopes[sector][0]*10))+2;
+		/*
+		tankTopSlope = (((double)(tankInfo[i][0][3][1]-(double)(tankInfo[i][0][0][1]))/((double)(tankInfo[i][0][3][0])-(double)(tankInfo[i][0][0][0]))));
+		angle1 = Math.round(Math.toDegrees(Math.atan2((tankTopSlope),1)));
+		tankInfo[i][1][1][0] = xPos(angle2,i,0,sector,7,0);
+		tankInfo[i][1][1][1] = yPos(angle2,i,0,sector,7,0);
+		
 		double angle3 = angleCalcP3(i,1,sector,30,1,0);
+		
 		tankInfo[i][1][0][0] = xPos(angle3,i,1,sector,10,1);
 		tankInfo[i][1][0][1] = yPos(angle3,i,1,sector,10,1);
 		
@@ -292,6 +298,7 @@ public class mainGame extends JFrame  {
 		angle3 = angleCalcP3(i,2,sector,30,1,1);
 		tankInfo[i][1][3][0] = xPos(angle3,i,2,sector,10,1);
 		tankInfo[i][1][3][1] = yPos(angle3,i,2,sector,10,1);
+	*/
 	}
 	public double angleCalcP1 (int i,int y,int slope,double length,int tankShape){
 		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][tankShape][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
