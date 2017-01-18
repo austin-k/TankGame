@@ -124,7 +124,7 @@ public class mainGame extends JFrame  {
 		//System.out.println("Inilizing Points array");
 		Point[] points = shellRadiusPoints();
 		//System.out.println("Array Inilized");
-		if(calcHit1(tankPoly,points) == true){
+		if(calcHitDual(tankPoly,points) == true){
 			hitDet = true;
 			System.out.println("Tank Hit");
 		}
@@ -157,7 +157,7 @@ public class mainGame extends JFrame  {
 		//System.out.println("Calc Run");
 		return hit;
 	}
-	public boolean calcHit1 (Polygon[][] currentPoly, Point[] points){
+	public boolean calcHitDual (Polygon[][] currentPoly, Point[] points){
 		boolean hit = false;
 		//System.out.println("Calc Start");
 		for(int i = 0; i < currentPoly.length; i++){
@@ -260,7 +260,7 @@ public class mainGame extends JFrame  {
 	
 	}
 	public void startPosMeth(int i, int sector, double startMod, double tankH, double tankW){
-		double tankTopSlope;
+		//double tankTopSlope;
 		tankInfo[i][0][1][0] = world[sector][0][0] + (int)(startMod); 
 		tankInfo[i][0][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
 		double angle1 = angleCalcP1(i,1,sector,tankH,0);
@@ -270,6 +270,7 @@ public class mainGame extends JFrame  {
 		
 		tankInfo[i][0][2][0] = (((700/7)*sector)+(int)startMod); 
 		tankInfo[i][0][2][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		
 		double angle2 = angleCalcP2(i,2,sector,tankW,0);
 		tankInfo[i][0][2][0] = xPos(angle2,i,2,sector,tankW,0); 
 		tankInfo[i][0][2][1] = yPos(angle2,i,2,sector,tankW,0);
@@ -279,6 +280,37 @@ public class mainGame extends JFrame  {
 		//angle1 = angleCalcP1(i,3,sector,tankH);
 		tankInfo[i][0][3][0] = xPos(angle1,i,2,sector,tankH,0);
 		tankInfo[i][0][3][1] = yPos(angle1,i,2,sector,tankH,0);
+		
+		startMod = 25;
+		tankH = 5;
+		tankInfo[i][1][1][0] = world[sector][0][0] + (int)(startMod); 
+		tankInfo[i][1][1][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		
+		tankInfo[i][1][0][0] = xPos(angle1,i,1,sector,tankH,0);
+		tankInfo[i][1][0][1] = yPos(angle1,i,1,sector,tankH,0);
+		startMod = 35;
+		//Generates origin in which the print is than moved
+		tankInfo[i][1][2][0] = (((700/7)*sector)+(int)startMod); 
+		tankInfo[i][1][2][1] = world[sector][0][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		//Moves generated point
+		tankInfo[i][1][2][0] = xPos(angle2,i,2,sector,tankW,1); 
+		tankInfo[i][1][2][1] = yPos(angle2,i,2,sector,tankW,1);
+		
+		tankInfo[i][1][3][0] = xPos(angle1,i,2,sector,tankH,0);
+		tankInfo[i][1][3][1] = yPos(angle1,i,2,sector,tankH,0);
+		if(secSlopes[sector][0]< 0){
+			//This method takes the angle, the current tank, the current cooridate place being manulated, the slope, the length of the line, and the current shape being worked on
+			tankInfo[i][2][1][0] = xPos(angle2,i,1,sector,14,1);
+			tankInfo[i][2][1][1] = ;
+		}else{
+			
+		}
+		
+		
+		//tankInfo[1][0][3][0] = world[sector][3][0] + (int)(startMod); 
+		//tankInfo[i][0][3][1] = world[sector][3][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+		//angle1 = angleCalcP1(i,3,sector,tankH);
+		
 		
 		/*
 		tankTopSlope = (((double)(tankInfo[i][0][3][1]-(double)(tankInfo[i][0][0][1]))/((double)(tankInfo[i][0][3][0])-(double)(tankInfo[i][0][0][0]))));
@@ -328,29 +360,7 @@ public class mainGame extends JFrame  {
 		System.out.println("Angle2: "+ angle);
 		return angle;
 	}
-	public double angleCalcP3 (int i,int y,int slope,double length,int tankShape,int dir){
-		double angle = Math.round(Math.toDegrees(Math.atan2(((tankInfo[i][tankShape][y][0]-((700/7)*slope))*secSlopes[slope][0]),length)));
-		System.out.println("Angle2: "+ angle);
-		System.out.println("tankInfo[i][y][0] "+ tankInfo[i][tankShape][y][0]);
-		if(dir == 0){
-			if(secSlopes[slope][0] < 0){
-				angle = (angle+300);
-			}
-			else{
-				
-				angle = 120 + angle;
-			}
-		}else{
-			if(secSlopes[slope][0] < 0){
-				angle = (angle+240);
-			}
-			else{
-			
-				angle = 60 + angle;
-			}
-		}
-		return angle;
-	}
+	//This method takes the angle, the current tank, the current cooridate place being manulated, the slope, the length of the line, and the current shape being worked on
 	public int xPos (double angle,int i,int j,int slope,double length,int tankShape){
 		int xPos = 0;
 		xPos = (int)(Math.round(length*(Math.cos(Math.toRadians(angle)))));

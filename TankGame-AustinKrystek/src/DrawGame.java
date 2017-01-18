@@ -11,7 +11,7 @@ public class DrawGame extends JPanel {
 	int[] shell;
 	public void paint(Graphics g){
 		super.paint( g );
-		g.setColor(Color.BLACK);
+		g.setColor(Color.CYAN);
 		g.fillRect(0,0,700,500);
 		g.setColor(Color.RED);
 		
@@ -22,12 +22,12 @@ public class DrawGame extends JPanel {
 		*/
 		g.setColor(Color.WHITE);
 		
-		/*
+		///*
 		for(int j = 0; j < worldPoly.length; j++){
 			g.fillPolygon(worldPoly[j]);
 		}
-		*/
-		///*
+		//*/
+		/*
 		g.setColor(Color.PINK);
 		g.fillPolygon(worldPoly[0]);
 		
@@ -43,20 +43,27 @@ public class DrawGame extends JPanel {
 		g.setColor(Color.ORANGE);
 		g.fillPolygon(worldPoly[4]);
 		
-		g.setColor(Color.CYAN);
+		g.setColor(Color.GREEN);
 		g.fillPolygon(worldPoly[5]);
 		
 		g.setColor(Color.WHITE);
 		g.fillPolygon(worldPoly[6]);
-		//*/
-		g.setColor(Color.RED);
+		*/
+		Color randomColor = new Color(34, 139, 34);
+		g.setColor(randomColor);
 		if (trust == 1){
 			//g.drawLine(tanksInfo[0][1][0],tanksInfo[0][1][1],tanksInfo[0][0][0],tanksInfo[0][0][1]);
 			for(int i = 0; i < 2; i++){
-				for(int j = 0; j < 2; j++){
-					g.fillPolygon(tankPoly[i][j]);
-				}
+				
+					g.fillPolygon(tankPoly[i][0]);
+				
 			}
+			g.setColor(Color.BLACK);
+			for(int i = 0; i < 2; i++){
+				
+				g.fillPolygon(tankPoly[i][1]);
+			
+		}
 		}
 		if(trust1 == 1){
 			g.fillOval(shell[0], shell[1], shell[2], shell[3]);
