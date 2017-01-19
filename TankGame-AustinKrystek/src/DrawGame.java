@@ -64,7 +64,7 @@ public class DrawGame extends JPanel {
 				g.fillPolygon(tankPoly[i][1]);
 			
 			}
-			g.setColor(Color.RED);
+			g.setColor(greenColor);
 			for(int i = 0; i < 2; i++){
 				
 				g.fillPolygon(tankPoly[i][2]);
