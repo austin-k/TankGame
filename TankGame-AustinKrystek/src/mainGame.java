@@ -17,12 +17,12 @@ public class mainGame extends JFrame  {
 	//Power and fire angle
 	int [] fireInfo = new int [2];
 	//Location of tank
-	int [][][][] tankInfo= new int[2][2][4][2];;
+	int [][][][] tankInfo= new int[2][3][4][2];;
 	//World Map
 	int[][][] world = new int [7][4][2];
 	//Sector Slopes and reciprocal
 	double[][] secSlopes = new double[7][2];
-	Polygon[][] tankPoly = new Polygon[2][2];
+	Polygon[][] tankPoly = new Polygon[2][3];
 	Polygon[] worldPoly = new Polygon[7];
 	int shellDi = 8;
 	int[] shell = {0,0,shellDi,shellDi};
@@ -98,6 +98,7 @@ public class mainGame extends JFrame  {
 		double time = 0.00;
 		System.out.println("Fire Angle: "+ fireInfo[0]);
 		System.out.println("xSpeed: " + xSpeed+ " ySpeed: "+ ySpeed);
+		tankArmUpdater(0,2);
 		double x,y; 
 		try{
 			do{
@@ -162,7 +163,7 @@ public class mainGame extends JFrame  {
 		//System.out.println("Calc Start");
 		for(int i = 0; i < currentPoly.length; i++){
 			//System.out.println("Checking next poly");
-			for(int o = 0; o < 2; o++){
+			for(int o = 0; o < 3; o++){
 				for(int j = 0; j < points.length; j++){
 				//System.out.println("About to check point: " + points[j]);
 					if (currentPoly[i][o].contains(points[j])){
@@ -234,7 +235,7 @@ public class mainGame extends JFrame  {
 		int x[] = new int[4];
 		int y[] = new int[4];
 		System.out.println(tankInfo.length+"");
-		for(int i = 0; i < tankInfo.length;i++ ){
+		for(int i = 0; i < tankInfo.length;i++){
 			double startMod = 25;
 			if(i == 0){
 				sector = 1;
@@ -248,7 +249,7 @@ public class mainGame extends JFrame  {
 			
 		}
 		for(int j = 0; j < 2; j++){
-			for(int o = 0; o < 2;o++){
+			for(int o = 0; o < 3;o++){
 				for(int i = 0; i < 4;i++){
 					x[i] = tankInfo[j][o][i][0];
 					y[i] = tankInfo[j][o][i][1];	
@@ -296,14 +297,46 @@ public class mainGame extends JFrame  {
 		tankInfo[i][1][2][0] = xPos(angle2,i,2,sector,tankW,1); 
 		tankInfo[i][1][2][1] = yPos(angle2,i,2,sector,tankW,1);
 		
-		tankInfo[i][1][3][0] = xPos(angle1,i,2,sector,tankH,0);
-		tankInfo[i][1][3][1] = yPos(angle1,i,2,sector,tankH,0);
+		tankInfo[i][1][3][0] = xPos(angle1,i,2,sector,tankH,1);
+		tankInfo[i][1][3][1] = yPos(angle1,i,2,sector,tankH,1);
 		if(secSlopes[sector][0]< 0){
-			//This method takes the angle, the current tank, the current cooridate place being manulated, the slope, the length of the line, and the current shape being worked on
-			tankInfo[i][2][1][0] = xPos(angle2,i,1,sector,14,1);
-			tankInfo[i][2][1][1] = ;
-		}else{
+			//This method takes the angle, the current tank, the point being rotated around , the slope, the length of the line, and the current shape being worked on
+			//Creates the point in the bottom left corner of the tank cannon
+			tankInfo[i][2][1][0] = tankInfo[i][0][0][0] + (int)(16);
+			tankInfo[i][2][1][1] = tankInfo[i][0][0][1] + (int)(Math.round(secSlopes[sector][0]*16));
+			//Creating points up vertical
+			tankInfo[i][2][0][0] = xPos(270,i,1,sector,10,2);
+			tankInfo[i][2][0][1] = yPos(270,i,1,sector,10,2);
+			startMod = 2;
+			//Generates origin in which the print is than moved
+			tankInfo[i][2][2][0] = tankInfo[i][2][1][0] + (int)(startMod); 
+			tankInfo[i][2][2][1] = tankInfo[i][2][1][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+			//Moves generated point
+			tankInfo[i][2][2][0] = xPos(angle2,i,2,sector,4,2); 
+			tankInfo[i][2][2][1] = yPos(angle2,i,2,sector,4,2);
 			
+			tankInfo[i][2][3][0] = xPos(270,i,2,sector,10,2);
+			tankInfo[i][2][3][1] = yPos(270,i,2,sector,10,2);
+			
+		}else{
+			//This method takes the angle, the current tank, the point being rotated around , the slope, the length of the line, and the current shape being worked on
+			//Creates the point in the bottom left corner of the tank cannon
+			tankInfo[i][2][1][0] = tankInfo[i][0][0][0] + (int)(16);
+			tankInfo[i][2][1][1] = tankInfo[i][0][0][1] + (int)(Math.round(secSlopes[sector][0]*16));
+			//Creating points up vertical
+			tankInfo[i][2][0][0] = xPos(90,i,1,sector,10,2);
+			tankInfo[i][2][0][1] = yPos(90,i,1,sector,10,2);
+			startMod = 2;
+			//Generates origin in which the print is than moved
+			tankInfo[i][2][2][0] = tankInfo[i][2][1][0] + (int)(startMod); 
+			tankInfo[i][2][2][1] = tankInfo[i][2][1][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+			//Moves generated point
+			tankInfo[i][2][2][0] = xPos(angle2,i,2,sector,4,2); 
+			tankInfo[i][2][2][1] = yPos(angle2,i,2,sector,4,2);
+			
+			tankInfo[i][2][3][0] = xPos(90,i,2,sector,10,2);
+			tankInfo[i][2][3][1] = yPos(90,i,2,sector,10,2);
+		
 		}
 		
 		
@@ -360,7 +393,7 @@ public class mainGame extends JFrame  {
 		System.out.println("Angle2: "+ angle);
 		return angle;
 	}
-	//This method takes the angle, the current tank, the current cooridate place being manulated, the slope, the length of the line, and the current shape being worked on
+	//This method takes the angle, the current tank, the point being rotated around , the slope, the length of the line, and the current shape being worked on
 	public int xPos (double angle,int i,int j,int slope,double length,int tankShape){
 		int xPos = 0;
 		xPos = (int)(Math.round(length*(Math.cos(Math.toRadians(angle)))));
@@ -416,4 +449,60 @@ public class mainGame extends JFrame  {
 		shell[0] = (xOrig + xNew);
 		shell[1] = (yOrig + yNew);
 	}
+	//Recalucates tank arm based on imput angle
+	public void tankArmUpdater(int tank, int sector){
+		double startMod = 25;
+		double angle;
+		double angle2 = angleCalcP2(tank,2,sector,35,0);
+		if(secSlopes[sector][0]< 0){
+			angle = fireInfo[0]+180;
+			//This method takes the angle, the current tank, the point being rotated around , the slope, the length of the line, and the current shape being worked on
+			//Creates the point in the bottom left corner of the tank cannon
+			tankInfo[tank][2][1][0] = tankInfo[tank][0][0][0] + (int)(16);
+			tankInfo[tank][2][1][1] = tankInfo[tank][0][0][1] + (int)(Math.round(secSlopes[sector][0]*16));
+			//Creating points up vertical
+			tankInfo[tank][2][0][0] = xPos(angle,tank,1,sector,10,2);
+			tankInfo[tank][2][0][1] = yPos(angle,tank,1,sector,10,2);
+			startMod = 2;
+			//Generates origin in which the print is than moved
+			tankInfo[tank][2][2][0] = tankInfo[tank][2][1][0] + (int)(startMod); 
+			tankInfo[tank][2][2][1] = tankInfo[tank][2][1][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+			//Moves generated point
+			tankInfo[tank][2][2][0] = xPos(angle2,tank,2,sector,4,2); 
+			tankInfo[tank][2][2][1] = yPos(angle2,tank,2,sector,4,2);
+			
+			tankInfo[tank][2][3][0] = xPos(angle,tank,2,sector,10,2);
+			tankInfo[tank][2][3][1] = yPos(angle,tank,2,sector,10,2);
+			
+		}else{
+			angle = fireInfo[0];
+			//This method takes the angle, the current tank, the point being rotated around , the slope, the length of the line, and the current shape being worked on
+			//Creates the point in the bottom left corner of the tank cannon
+			tankInfo[tank][2][1][0] = tankInfo[tank][0][0][0] + (int)(16);
+			tankInfo[tank][2][1][1] = tankInfo[tank][0][0][1] + (int)(Math.round(secSlopes[sector][0]*16));
+			//Creating points up vertical
+			tankInfo[tank][2][0][0] = xPos(angle,tank,1,sector,10,2);
+			tankInfo[tank][2][0][1] = yPos(angle,tank,1,sector,10,2);
+			startMod = 2;
+			//Generates origin in which the print is than moved
+			tankInfo[tank][2][2][0] = tankInfo[tank][2][1][0] + (int)(startMod); 
+			tankInfo[tank][2][2][1] = tankInfo[tank][2][1][1] + (int)(Math.round(secSlopes[sector][0]*startMod));
+			//Moves generated point
+			tankInfo[tank][2][2][0] = xPos(angle2,tank,2,sector,4,2); 
+			tankInfo[tank][2][2][1] = yPos(angle2,tank,2,sector,4,2);
+			
+			tankInfo[tank][2][3][0] = xPos(angle,tank,2,sector,10,2);
+			tankInfo[tank][2][3][1] = yPos(angle,tank,2,sector,10,2);
+		
+		}
+		int x[] = new int[4];
+		int y[] = new int[4];
+		for(int i = 0; i < 4;i++){
+			x[i] = tankInfo[tank][2][i][0];
+			y[i] = tankInfo[tank][2][i][1];	
+		}
+		tankPoly[tank][2] = new Polygon(x,y,4);
+		display.drawTest(tankPoly);
+	}
+	
 }

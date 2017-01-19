@@ -49,8 +49,8 @@ public class DrawGame extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillPolygon(worldPoly[6]);
 		*/
-		Color randomColor = new Color(34, 139, 34);
-		g.setColor(randomColor);
+		Color greenColor = new Color(34, 139, 34);
+		g.setColor(greenColor);
 		if (trust == 1){
 			//g.drawLine(tanksInfo[0][1][0],tanksInfo[0][1][1],tanksInfo[0][0][0],tanksInfo[0][0][1]);
 			for(int i = 0; i < 2; i++){
@@ -63,7 +63,14 @@ public class DrawGame extends JPanel {
 				
 				g.fillPolygon(tankPoly[i][1]);
 			
-		}
+			}
+			g.setColor(Color.RED);
+			for(int i = 0; i < 2; i++){
+				
+				g.fillPolygon(tankPoly[i][2]);
+			
+			}
+		
 		}
 		if(trust1 == 1){
 			g.fillOval(shell[0], shell[1], shell[2], shell[3]);
