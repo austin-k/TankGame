@@ -11,6 +11,8 @@ public class mainGame extends JFrame {
 	private JPanel gameInfo;
 	// Creates health bar object
 	private JPanel[] hBarPanel;
+	private JPanel[] playerNames;
+	private JLabel[] names = new JLabel[2];
 	private JPanel scoreDisplay ;
 	// Sets the array of health bars
 	private JProgressBar[] hpBar = new JProgressBar[2];
@@ -42,12 +44,30 @@ public class mainGame extends JFrame {
 	int currentTurn = 0;
 	//Array to hold game score
 	int [] score = new int [2];
+	//Which type of game is running
+	int gameType;
 	// Creates main window of game
-	public mainGame() {
+	public mainGame(int gameType) {
+		this.gameType = gameType;
 		// Set the title of the window
 		setTitle("Tank Game");
 		// Set array of JPanels to hold health bars
 		hBarPanel = new JPanel[2];
+		
+		playerNames = new JPanel[2];
+		playerNames[0] = new JPanel();
+		playerNames[1] = new JPanel();
+		playerNames[0].setLayout(null);
+		playerNames[1].setLayout(null);
+		if(gameType == 0){
+			names[0] = new JLabel("Player 1");
+			names[1] = new JLabel("Player 2");
+		}else if(gameType == 1){
+			names[0] = new JLabel("Player 1");
+			names[1] = new JLabel("A.I.");
+		}
+		playerNames[0].add(names[0]);
+		playerNames[0].add(names[1]);
 		//Creates score display panel
 		scoreDisplay = new JPanel();
 		// Sets health bars to exist in the hpBar array
@@ -66,7 +86,7 @@ public class mainGame extends JFrame {
 		// Sets location of gameInfo
 		gameInfo.setLocation(0, 0);
 		// Set the background color
-		gameInfo.setBackground(Color.GRAY);
+		gameInfo.setBackground(Color.lightGray);
 		// Sets the layout of the gameinfo window
 		gameInfo.setLayout(null);
 		// Set the display size(game is played in here)
@@ -80,7 +100,7 @@ public class mainGame extends JFrame {
 		scoreDigits[1].setFont(new Font("Serif", Font.PLAIN, 60));
 		scoreDisplay.setSize(200,50);
 		scoreDisplay.setLocation(300,50);
-		scoreDisplay.setBackground(Color.WHITE);
+		scoreDisplay.setBackground(Color.LIGHT_GRAY);
 		scoreDisplay.setLayout(new GridLayout(1,2));
 		scoreDisplay.add(scoreDigits[0]);
 		scoreDisplay.add(scoreDigits[1]);
@@ -125,9 +145,10 @@ public class mainGame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
-		// Create the maine game
-		new mainGame();
+		System.out.println("mainRun");
+		// Create the main game
+		new mainGame(0);
+		
 		// Close the application
 		System.exit(0);
 
@@ -712,8 +733,10 @@ public class mainGame extends JFrame {
 		}
 	}
 	public void updateScore(){
+		//Update all scores
 		scoreDigits[0].setText(score[0] + "");
 		scoreDigits[1].setText(score[1] + "");
+		//REPAINT the score on the screen
 		repaint();
 	}
 }
