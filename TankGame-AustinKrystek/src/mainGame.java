@@ -2,11 +2,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class mainGame extends JFrame {
 
 	// Creates a container for the frame
 	Container frame;
+	
+	int tankAiHit;
+	//ArrayList to hold fire Possibitlties
+	ArrayList<Integer>[] firePos = new ArrayList[2];
 	// Creates gameInfo object to hold important information
 	private JPanel gameInfo;
 	// Creates health bar object
@@ -57,17 +62,10 @@ public class mainGame extends JFrame {
 		playerNames = new JPanel[2];
 		playerNames[0] = new JPanel();
 		playerNames[1] = new JPanel();
-		playerNames[0].setLayout(null);
-		playerNames[1].setLayout(null);
-		if(gameType == 0){
-			names[0] = new JLabel("Player 1");
-			names[1] = new JLabel("Player 2");
-		}else if(gameType == 1){
-			names[0] = new JLabel("Player 1");
-			names[1] = new JLabel("A.I.");
-		}
-		playerNames[0].add(names[0]);
-		playerNames[0].add(names[1]);
+		playerNames[0].setBackground(Color.lightGray);
+		playerNames[1].setBackground(Color.lightGray);
+		
+		
 		//Creates score display panel
 		scoreDisplay = new JPanel();
 		// Sets health bars to exist in the hpBar array
@@ -104,6 +102,24 @@ public class mainGame extends JFrame {
 		scoreDisplay.setLayout(new GridLayout(1,2));
 		scoreDisplay.add(scoreDigits[0]);
 		scoreDisplay.add(scoreDigits[1]);
+		playerNames[0].setLayout(new GridLayout(1,1));
+		playerNames[1].setLayout(new GridLayout(1,1));
+		playerNames[0].setSize(60,20);
+		playerNames[1].setSize(60,20);
+		playerNames[0].setLocation(120,60);
+		playerNames[1].setLocation(620,60);
+		if(gameType == 0){
+			names[0] = new JLabel("Player 1", JLabel.CENTER);
+			names[1] = new JLabel("Player 2", JLabel.CENTER);
+		}else if(gameType == 1){
+			names[0] = new JLabel("Player 1", JLabel.CENTER);
+			names[1] = new JLabel("A.I.", JLabel.CENTER);
+		}
+		names[0].setFont(new Font("Serif", Font.PLAIN, 16));
+		names[1].setFont(new Font("Serif", Font.PLAIN, 16));
+		playerNames[0].add(names[0]);
+		playerNames[1].add(names[1]);
+		
 		// Set the hParPanel array elements to be a new JPanel
 		hBarPanel[0] = new JPanel();
 		hBarPanel[1] = new JPanel();
@@ -127,9 +143,12 @@ public class mainGame extends JFrame {
 		hBarPanel[0].add(hpBar[0]);
 		hBarPanel[1].add(hpBar[1]);
 		// add the health bar panels to the game info panel
+		
+		gameInfo.add(scoreDisplay);
+		gameInfo.add(playerNames[0]);
+		gameInfo.add(playerNames[1]);
 		gameInfo.add(hBarPanel[0]);
 		gameInfo.add(hBarPanel[1]);
-		gameInfo.add(scoreDisplay);
 		// adds the gameinfo panel panel to the main window
 		frame.add(gameInfo);
 		// adds the display panel to the main window
@@ -141,6 +160,10 @@ public class mainGame extends JFrame {
 		// Set the window to visible
 		setVisible(true);
 		// Run main game
+		if(gameType == 1){
+			firePos[0] = new ArrayList<Integer>();
+			firePos[1] = new ArrayList<Integer>();
+		}
 		run();
 	}
 
@@ -178,18 +201,31 @@ public class mainGame extends JFrame {
 				} else if (currentTurn == 1) {
 					// Get the input angle, and flips it 180 because 0,0 is in the
 					// top left
-					fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle")) + 180);
-					// Gets input fire power
-					fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power")));
-					// Calculate where the shell should be and if it hits
-					shellCalc(currentTurn);
+					if(gameType == 0){
+						fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle")) + 180);
+						// Gets input fire power
+						fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power")));
+						// Calculate where the shell should be and if it hits
+						shellCalc(currentTurn);
+					} else if (gameType == 1){
+						firePos[0].clear();
+						firePos[1].clear();
+						firePos = findFireSettings();
+						int rng = (int)Math.round(Math.random()*firePos[0].size());
+						System.out.println(firePos[0].size());
+						fireInfo[0] = firePos[0].get(rng);
+						fireInfo[1] = firePos[1].get(rng);
+						shellCalc(currentTurn);
+						
+					}
 					// Set the turn to be the next players turn
 					currentTurn = 0;
+					
 				}
 				// Update the health bars with the new health
 				updateHeatlhBars();
 			}
-			if(tankHealth[0] > 0){
+			if(tankHealth[0] <= 0){
 				score[1] += 1;
 			}else{
 				score[0] += 1;
@@ -739,4 +775,132 @@ public class mainGame extends JFrame {
 		//REPAINT the score on the screen
 		repaint();
 	}
+	public ArrayList<Integer>[] findFireSettings(){
+		ArrayList<Integer>[] settings = new ArrayList[2]; 
+		settings[0] = new ArrayList<Integer>();
+		settings[1] = new ArrayList<Integer>();
+		for(int i = 200; i < 266; i++){
+			for(int j = 20; j < 80; j++){
+				shellCalcAI(1,i,j);
+				if ( tankAiHit == 0){
+					settings[0].add(i);
+					settings[1].add(j);
+					tankAiHit = 1;
+				}
+			}
+		}
+		
+		System.out.println(settings[0].size());
+		
+		return settings;
+	}
+	public void shellCalcAI(int tank, int Angle, int Power) {
+		// Determine the horizontal speed based on the input speed and input
+		// fire angle
+		double xSpeed = (double) Power * Math.cos(Math.toRadians(Angle));
+		// Determine the vertical speed based on the input speed and input fire
+		// angle
+		double ySpeed = (double) Power * Math.sin(Math.toRadians(Angle));
+		// Set the speed of gravity
+		double gravity = 9.8;
+		// Set the current time to do physics
+		double time = 0.00;
+		// Create an x and y points
+		double x, y;
+		try {
+			do {
+				// Sets the time 0.04 seconds forward
+				time += 0.04;
+				// Find how far horizontal distance traveled
+				x = (xSpeed * time);
+				// Sets the current height of the shell based on how long it has
+				// been in the air
+				y = ((ySpeed * time) + (((0.5) * gravity) * (Math.pow(time, 2))));
+				// Translate the point from working at a 0,0 to the origin point
+				// being a just above the tank arm
+				posTranslator(tankInfo[tank][2][3][0], tankInfo[tank][2][3][1] - 15, (int) (Math.round(x)),
+						(int) (Math.round(y)));
+	
+				// Draw the shell
+				// Sleep for 17 milliseconds(this is 60fps)
+				// Run the loop until a hit is calculated
+			} while (false == hitDetAi());
+		}
+		// if an exception happens out put hit detection failure
+		catch (Exception e) {
+			System.out.println("Hit Detection failure");
+
+		}
+	}
+	public boolean hitDetAi() {
+		// Set the return to false(default response)
+		boolean hitDet = false;
+		// Creates an array of points based around the tank shell
+		Point[] points = shellRadiusPoints();
+		// Check if the shell hits a tank
+		if (calcHitDualAi(tankPoly, points) == true) {
+			hitDet = true;
+
+		}
+		// Check if the shell hits the world
+		if (calcHitAi(worldPoly, points) == true) {
+			hitDet = true;
+
+		}
+		// Check if the shell goes out of bounds
+		if (shell[0] < -16 || shell[0] > 700) {
+			hitDet = true;
+
+		}
+		// System.out.println("No hit");
+		return hitDet;
+	}
+	// Methods for calculating hit on world
+		public boolean calcHitAi(Polygon[] currentPoly, Point[] points) {
+			boolean hit = false;
+			// Set hit to false, loop though all polygons
+			for (int i = 0; i < currentPoly.length; i++) {
+				// Loop though all points and check for a hit
+				for (int j = 0; j < points.length; j++) {
+					// Check for hit
+					if (currentPoly[i].contains(points[j])) {
+						// If a hit is detected return true
+						hit = true;
+						
+						// Break out of the loops
+						break;
+					}
+				}
+			}
+			// Return if a hit was detected or not
+			return hit;
+		}
+
+		// Methods for calculating hits on tanks
+		public boolean calcHitDualAi(Polygon[][] currentPoly, Point[] points) {
+			boolean hit = false;
+			// Set hit to false, loop though all polygons
+			for (int i = 0; i < currentPoly.length; i++) {
+				// Loop though all parts of a tank
+				for (int o = 0; o < 3; o++) {
+					// Loop though all points and check for a hit
+					for (int j = 0; j < points.length; j++) {
+						// Check for hit
+						if (currentPoly[i][o].contains(points[j])) {
+							//If enemy tank is hit return true else return false
+							hit = true;
+							tankAiHit = i;
+							// If a hit is detected return true
+							
+							
+							// Break out of the loops
+							break;
+						}
+					}
+				}
+			}
+			// Return if a hit was detected or not
+			return hit;
+		}
+
 }
