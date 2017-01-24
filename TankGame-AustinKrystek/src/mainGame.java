@@ -51,9 +51,14 @@ public class mainGame extends JFrame {
 	int [] score = new int [2];
 	//Which type of game is running
 	int gameType;
+	//World setting for hardness
+	int settings;
 	// Creates main window of game
-	public mainGame(int gameType) {
+	homePage homeWindow;
+	public mainGame(int gameType, int settings,homePage home) {
+		homeWindow = home;
 		this.gameType = gameType;
+		this.settings = settings;
 		// Set the title of the window
 		setTitle("Tank Game");
 		// Set array of JPanels to hold health bars
@@ -170,7 +175,7 @@ public class mainGame extends JFrame {
 	public static void main(String[] args) {
 		System.out.println("mainRun");
 		// Create the main game
-		new mainGame(0);
+		//new mainGame(0,0);
 		
 		// Close the application
 		System.exit(0);
@@ -211,28 +216,31 @@ public class mainGame extends JFrame {
 						firePos[0].clear();
 						firePos[1].clear();
 						firePos = findFireSettings();
-						int rng = (int)Math.round(Math.random()*firePos[0].size());
-						System.out.println(firePos[0].size());
-						fireInfo[0] = firePos[0].get(rng);
-						fireInfo[1] = firePos[1].get(rng);
+						if(settings == 2){
+							
+							int rng = (int)Math.round(Math.random()*firePos[0].size());
+							System.out.println(firePos[0].size());
+							fireInfo[0] = firePos[0].get(rng);
+							fireInfo[1] = firePos[1].get(rng);
+						}
 						shellCalc(currentTurn);
 						
 					}
 					// Set the turn to be the next players turn
 					currentTurn = 0;
-					
 				}
 				// Update the health bars with the new health
 				updateHeatlhBars();
 			}
 			if(tankHealth[0] <= 0){
 				score[1] += 1;
-			}else{
+			}else if(tankHealth[1] <= 0){
 				score[0] += 1;
 			}
 			updateScore();
 			setupGame();
 		}
+		endGame();
 	}
 
 	public void setupGame() {
@@ -283,11 +291,14 @@ public class mainGame extends JFrame {
 				// being a just above the tank arm
 				posTranslator(tankInfo[tank][2][3][0], tankInfo[tank][2][3][1] - 15, (int) (Math.round(x)),
 						(int) (Math.round(y)));
-				System.out.println("Calculated X: " + x + " Y: " + y + " Time: " + time);
+				//System.out.println("Calculated X: " + x + " Y: " + y + " Time: " + time);
 				// Draw the shell
+				System.out.println("X: " + shell[0] + " Y: " + shell[1]);
 				display.drawShell(shell);
+				display.revalidate();
+				repaint();
 				// Sleep for 17 milliseconds(this is 60fps)
-				Thread.sleep(17);
+				Thread.sleep(34);
 				// Run the loop until a hit is calculated
 			} while (false == hitDet());
 		}
@@ -818,7 +829,7 @@ public class mainGame extends JFrame {
 				y = ((ySpeed * time) + (((0.5) * gravity) * (Math.pow(time, 2))));
 				// Translate the point from working at a 0,0 to the origin point
 				// being a just above the tank arm
-				posTranslator(tankInfo[tank][2][3][0], tankInfo[tank][2][3][1] - 15, (int) (Math.round(x)),
+				posTranslatorAi(tankInfo[tank][2][3][0], tankInfo[tank][2][3][1] - 15, (int) (Math.round(x)),
 						(int) (Math.round(y)));
 	
 				// Draw the shell
@@ -902,5 +913,12 @@ public class mainGame extends JFrame {
 			// Return if a hit was detected or not
 			return hit;
 		}
-
+		public void posTranslatorAi(int xOrig, int yOrig, int xNew, int yNew) {
+			// Changes the 0,0 to a new point on the plain
+			shell[0] = (xOrig + xNew);
+			shell[1] = (yOrig + yNew);
+		}
+		public void endGame(){
+			homeWindow.gameOver(score);
+		}
 }

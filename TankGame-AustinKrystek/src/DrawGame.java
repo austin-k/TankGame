@@ -97,6 +97,7 @@ public class DrawGame extends JPanel {
 	     //Tells the drawing canvas to paint the tank
 	     trust = 1;
 	     //Repaint canvas
+	    
 	     repaint();
 	}
 	//Receives polygons that make up the world
@@ -105,6 +106,7 @@ public class DrawGame extends JPanel {
 		//Set the classes world poly to be the input poly array
 	     this.worldPoly = worldPoly; 
 	     //Repaint the canvas
+	     
 	     repaint();
 	}
 	
@@ -115,7 +117,10 @@ public class DrawGame extends JPanel {
 		//Tells the canvas to draw the tank shell
 		trust1 = 1;
 		//Repaint the canvas
+		
 		repaint();
+		revalidate();
+		
 	}
 	
 }

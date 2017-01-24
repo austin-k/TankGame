@@ -4,7 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
-public class homePage  extends JFrame implements ActionListener{
+public class homePage  extends JFrame implements ActionListener{;
 	// Creates a container for the frame
 	Container frame;
 	CardLayout mainLayout = new CardLayout();
@@ -19,6 +19,8 @@ public class homePage  extends JFrame implements ActionListener{
 	private ArrayList[] accountInfo = new ArrayList[6];
 	private JPanel mainPanel = new JPanel();
 	private JPanel titlePn = new JPanel();
+	static homePage runningWindow;
+	mainGame game;
 	public homePage(){
 		super("Home Page");
 		frame = getContentPane();
@@ -176,8 +178,8 @@ public class homePage  extends JFrame implements ActionListener{
 	}
 	
 	public static void main(String[] args) {
-		new homePage();
-		
+		homePage mainWindow = new homePage();
+		runningWindow = mainWindow;
 		//Launch Game
 		//new mainGame(1);
 	}
@@ -252,16 +254,18 @@ public class homePage  extends JFrame implements ActionListener{
 			
 		}
 		else if(e.getSource() == buttons[8]){
-			
+			//God mode AI
+			setVisible(false);
+			game = new mainGame(1,2,runningWindow);
 		}
 		else if(e.getSource() == buttons[9]){
-			
+			//Local Multiplayer
 		}
 		else if(e.getSource() == buttons[10]){
-			
+			//Search players
 		}
 		else if(e.getSource() == buttons[11]){
-			
+			//Highscore board
 		}
 		else if(e.getSource() == buttons[12]){
 			updateAccountFile();
@@ -389,5 +393,18 @@ public class homePage  extends JFrame implements ActionListener{
 		}else{
 			info[9].setText(Long.toString(Math.round(((double)(accountInfo[3].get(accountNumber))/(double)(accountInfo[5].get(accountNumber))))));
 		}
+	}
+	public void gameOver(int[] score){
+		game = null;
+		//Set games played counter one up
+		accountInfo[3].set(accountNumber,((int)(accountInfo[3].get(accountNumber))+1));
+		//Check if game was lost and add one to the lose counter
+		if(score[0] < score[1]){
+			accountInfo[5].set(accountNumber,((int)(accountInfo[5].get(accountNumber))+1));
+		}else{
+			accountInfo[4].set(accountNumber,((int)(accountInfo[4].get(accountNumber))+1));
+		}
+		setLabels();
+		setVisible(true);
 	}
 }
