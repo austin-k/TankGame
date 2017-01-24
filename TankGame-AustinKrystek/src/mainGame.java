@@ -191,9 +191,9 @@ public class mainGame extends JFrame {
 				if (currentTurn == 0) {
 					// Get the input angle, and flips it 180 because 0,0 is in the
 					// top left
-					fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle")) + 180);
+					fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Please enter the fire angle")) + 180);
 					// Gets input fire power
-					fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power")));
+					fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Please enter the fire power")));
 					// Calculate where the shell should be and if it hits
 					shellCalc(currentTurn);
 					// Set the turn to be the next players turn
@@ -202,9 +202,9 @@ public class mainGame extends JFrame {
 					// Get the input angle, and flips it 180 because 0,0 is in the
 					// top left
 					if(gameType == 0){
-						fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire angle")) + 180);
+						fireInfo[0] = (Integer.parseInt(JOptionPane.showInputDialog("Please enter the fire angle")) + 180);
 						// Gets input fire power
-						fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Pleace enter the fire power")));
+						fireInfo[1] = (Integer.parseInt(JOptionPane.showInputDialog("Please enter the fire power")));
 						// Calculate where the shell should be and if it hits
 						shellCalc(currentTurn);
 					} else if (gameType == 1){
