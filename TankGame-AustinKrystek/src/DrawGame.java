@@ -12,6 +12,7 @@ public class DrawGame extends JPanel {
 	int[] shell;
 	public void paint(Graphics g){
 		super.paint( g );
+		//System.out.println("Paint Ran");
 		//Set color of background
 		g.setColor(Color.CYAN);
 		//Draw background
@@ -98,7 +99,7 @@ public class DrawGame extends JPanel {
 	     trust = 1;
 	     //Repaint canvas
 	    
-	     repaint();
+	     this.repaint();
 	}
 	//Receives polygons that make up the world
 	public void drawWorld(Polygon[] worldPoly)
@@ -107,7 +108,7 @@ public class DrawGame extends JPanel {
 	     this.worldPoly = worldPoly; 
 	     //Repaint the canvas
 	     
-	     repaint();
+	     this.repaint();
 	}
 	
 	//Draw the tank shell 	
@@ -117,9 +118,8 @@ public class DrawGame extends JPanel {
 		//Tells the canvas to draw the tank shell
 		trust1 = 1;
 		//Repaint the canvas
-		
-		repaint();
-		revalidate();
+		//System.out.println("Trying to paint");
+		this.repaint();
 		
 	}
 	
